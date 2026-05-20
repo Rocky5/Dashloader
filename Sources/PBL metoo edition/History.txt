@@ -1,0 +1,46 @@
+Version History:
+
+12-11-2004 The Metoo Edition updated
+	Added video blanking Screen option.
+	Added new BFM 2bl footer format, mainly for EvoX M8+ BFM support.
+	New AVSAVE kernel parameter to allow saved screen states to pass
+	across bios loading (requires support from the loaded kernel.)
+
+03-08-2004 The Metoo Edition
+	Phoenix Bios Loader FUBARed by rmenhal (no relation to The Phoenix
+	Project.)
+	Support for kernels 5530+.
+	Support for video output taken out (was only for Conexant).
+	Debug printing to a file instead (DebugLog option in boot.cfg).
+	Added EEPROMKey1_6 setting to boot.cfg for Xbox v1.6 EEPROM key.
+	Rewrote most of the configuration file parser.
+	Support for loading BFM-version of EvoX M8.
+
+31-07-2003 Version 1.3
+	Finally fixed the stupid EEPROM key problem.  Now retail based bioses should work when
+	booting from a retail bios using one of the many hacks available.  
+	Added the EEPROM keys to the boot.cfg
+	Added Xbox version detection.
+	Added Retail 5101 BFM to the known working list.
+
+26-07-2003 Version 1.2
+	Added many more bioses to confirmed-working list
+	LED Blink feature can be disabled by not specifying a value in boot.cfg
+	Added support for switching between 2 bioses using tray eject detection
+	Added support for 256k and 512k bioses.
+	Fixed a bug with the eeprom key patching causing certain save games not to work.
+	Fixed a bug where editing boot.cfg in a non Un*x compatible editor would cause problems.
+	Added pretty fade in/out of splash.
+	Factored in many of the new code cleanups in xbeboot.
+
+23-07-2003 Version 1.1
+	Added 2 debug bioses to confirmed-working list
+	LED Blink code specifiable in Config
+	Fixed a bug that caused an invalid pointer with a decrypted 2bl
+	Added a debug output mode, specifiable in the config
+	Properly fixed rest-on-eject issues
+
+18-07-2003 Initial release
+	Boots x2 4977 Boot From Media ROM
+	RC4 key specified in config
+	Rom filename specified in config

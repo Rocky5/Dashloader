@@ -1,0 +1,8 @@
+If you're experiencing boot issues install the correct font for your system.
+
+Do not! install the wrong one or you will soft brick your xbox. You will need a PC and FatXplorer to fix it.
+
+Select the correct font and copy it to C:\xodash\ and overwrite the xbox.xtf file.
+(that means delete it and rename the font you used to xbox.xtf)
+
+By default the generic font is used.

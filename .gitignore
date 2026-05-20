@@ -1,0 +1,9 @@
+[Dd]ebug/
+[Rr]elease/
+[Rr]elease_LTCG/
+[Rr]eleases/
+/Bios Loader/
+/Dashloader/
+*.ncb
+*.sln
+*.suo
