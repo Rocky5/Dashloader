@@ -3,7 +3,7 @@
 A lightweight XBE designed to be placed before Phoenix Bios Loader Metoo Edition, giving you a recovery window to recover from a bad overclock or something else that locks the system when using a BFM bios. (this is mainly for softmod BFM setups) Yes I know you can boot an alt bios via eject with PBL but if you bork PBL then what. It's 400ms for peace of mind :P.
 
 You must know what you're doing to use this, I take no responsibility if you bork something.
-`bios.xbe` and `recovery.xbe` must be habibi signed (xbedump.exe) if edited in anyway shape of form.
+`bios.xbe`, `default.xbe` and `recovery.xbe` must be habibi signed (xbedump.exe) if edited in anyway shape of form. When you build bios loader via the bat file it gets signed automatically.
 
 ---
 
