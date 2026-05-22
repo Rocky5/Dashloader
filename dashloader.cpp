@@ -50,7 +50,6 @@ void __cdecl main()
 	XMount("R:", "\\Device\\Harddisk0\\Partition14");
 
 	// Check if we are running my softmod. (aka Rocky5 softmod)
-	XMount("R:", "\\Device\\Harddisk0\\Partition14");
 	softmodded = file_exist("R:\\nkpatcher\\default.xbe");
 
 	CreateDirectory("E:\\CACHE", NULL);
