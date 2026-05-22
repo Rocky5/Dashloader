@@ -40,13 +40,19 @@ extern "C" {
 	);
 	
 	extern NTSTATUS __stdcall NtClose(HANDLE Handle);
+	extern NTSTATUS __stdcall NtReadFile(
+		HANDLE FileHandle,
+		HANDLE Event,
+		PIO_APC_ROUTINE ApcRoutine,
+		PVOID ApcContext,
+		PIO_STATUS_BLOCK IoStatusBlock,
+		PVOID Buffer,
+		ULONG Length,
+		PLARGE_INTEGER ByteOffset
+	);
 	extern VOID __stdcall HalReturnToFirmware(unsigned int);
 	extern VOID __stdcall RtlInitAnsiString(void *destp, void *srcp);
 	extern NTSTATUS __stdcall IoDismountVolumeByName(PANSI_STRING DeviceName);
-	
-	extern NTSTATUS __stdcall IoDismountVolumeByName(
-		PANSI_STRING DeviceName
-	);
 	
 	/* Xbox Kernel Functions */
 	extern NTSTATUS __stdcall NtDeviceIoControlFile(

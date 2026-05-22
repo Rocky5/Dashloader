@@ -21,6 +21,7 @@ typedef struct _DASHLOADER_CONFIG
 {
 	// [UI]
 	int UI_Enabled;
+	int UI_SingleColour;
 	int UI_ButtonDelay;
 	int UI_LaunchDelay;
 
@@ -76,6 +77,8 @@ static void ini_set(DASHLOADER_CONFIG* cfg, const char* key, const char* val)
 {
 	if (_stricmp(key, "UI_Enabled") == 0)
 		cfg->UI_Enabled = atoi(val);
+	else if (_stricmp(key, "UI_SingleColour") == 0)
+		cfg->UI_SingleColour = atoi(val);
 	else if (_stricmp(key, "UI_ButtonDelay") == 0)
 		cfg->UI_ButtonDelay = atoi(val);
 	else if (_stricmp(key, "UI_LaunchDelay") == 0)
@@ -113,6 +116,7 @@ static void ini_load(DASHLOADER_CONFIG* cfg, const char* ini_path)
 {
 	// Defaults
 	cfg->UI_Enabled = 1;
+	cfg->UI_SingleColour = 0;
 	cfg->UI_ButtonDelay = 1000;
 	cfg->UI_LaunchDelay = 700;
 	cfg->Log_Enabled = 1;
@@ -174,8 +178,15 @@ static void ini_load(DASHLOADER_CONFIG* cfg, const char* ini_path)
 		val[sizeof(val) - 1] = '\0';
 		ini_trim(val);
 
+		char* inline_comm = strchr(val, ';');
+		if (!inline_comm) inline_comm = strchr(val, '#');
+		if (inline_comm) {
+			*inline_comm = '\0';
+			ini_trim(val);
+		}
+
 		// Build key: Section_Key
-		char fullkey[192];
+		char fullkey[MAX_PATH_LEN];
 		if (section[0])
 			sprintf(fullkey, "%s_%s", section, key);
 		else

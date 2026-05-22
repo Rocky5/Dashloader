@@ -21,7 +21,7 @@
 #include "external.h"
 #include "dashloader_ui.h"
 
-#define BUILD_VERSION "2.0.0"
+#define BUILD_VERSION "2.0.1"
 
 #define INI_FILE "D:\\Dashloader.ini"
 
@@ -39,7 +39,7 @@ void __cdecl main()
 	if (g_cfg.Log_Enabled)
 		logfile = fopen("D:\\Dashloader.log", "w+t");
 
-	debuglog("[Dashloader Bios Recovery Loader: %s]", BUILD_VERSION);
+	debuglog("[Dashloader Bios Recovery Loader: v%s]", BUILD_VERSION);
 	debuglog("Xbox kernel version: %d.%d.%d.%d", XboxKrnlVersion->VersionMajor, XboxKrnlVersion->VersionMinor, XboxKrnlVersion->Build, XboxKrnlVersion->Qfe);
 
 	XInitDevices(0, NULL);
@@ -79,8 +79,8 @@ void __cdecl main()
 			buttonFired = TRUE;
 			g_cfg.UI_Enabled = 1;
 			InitD3D();
-			ToWide("Dashloader Bios Recovery Loader " BUILD_VERSION, g_wszHeader, 64);
-			SetError("Bios Recovery Mode...");
+			ToWide("Dashloader Bios Recovery Loader v" BUILD_VERSION, g_wszHeader, 64);
+			ShowErrorScreen("Bios Recovery Mode...");
 			Sleep(4000);
 			debuglog("");
 			debuglog("[Button Window]");
@@ -110,7 +110,7 @@ void __cdecl main()
 	{
 		_snprintf(msg, sizeof(msg), "All failed. :( Insert a disc and reboot.\nRebooting in %d", failedTimer);
 		msg[sizeof(msg) - 1] = '\0';
-		SetError(msg);
+		ShowErrorScreen(msg);
 		Sleep(1000);
 		failedTimer--;
 	}

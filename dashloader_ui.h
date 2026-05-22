@@ -20,18 +20,20 @@
 #include <XBUtil.h>
 #include <fstream>
 #include "font.h"
-#include "dashloader.h"
+#include "dashloader_ini.h"
 #include "xbinput.h"
 
 // Gamepad members
 XBGAMEPAD* m_Gamepad;
 XBGAMEPAD  m_DefaultGamepad;
 
-#define COLOR_BACKGROUND 0x00000000  //0xFF060d18
+#define COLOR_BACKGROUND 0xFF000000  //0xFF152E55
 #define COLOR_HEADER     0xFFFFFFFF
-#define COLOR_STATUS     0XFF2CC1FF
-#define COLOR_ERROR      0xFFFF2C2C
-#define COLOR_BUTTON     0xFFf8ff2c
+#define COLOR_GENERAL    0xFF41C7FF
+#define COLOR_STATUS     0XFF77DF40
+#define COLOR_ERROR      0xFFFF4141
+#define COLOR_BUTTON     0xFFF8FF41
+#define COLOR_ALT        0xBFFFFFFF
 
 extern DASHLOADER_CONFIG g_cfg;
 
@@ -166,28 +168,7 @@ static void InitD3D()
 }
 
 
-static void ShowScreen()
-{
-	if (!g_bD3DReady)
-		return;
-
-	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, COLOR_BACKGROUND, 1.0f, 0);
-	g_pDevice->BeginScene();
-	g_Font.DrawText(40, 40, COLOR_HEADER, g_wszHeader, 0);
-	g_Font.DrawText(40, 55, COLOR_STATUS, g_wszStatus, 0);
-	g_pDevice->EndScene();
-	g_pDevice->Present(NULL, NULL, NULL, NULL);
-}
-
-
-static void SetStatus(const char* msg)
-{
-	ToWide(msg, g_wszStatus, 512);
-	ShowScreen();
-}
-
-
-static void SetButtonPress(const char* msg)
+static void ShowButtonPressScreen(const char* msg)
 {
 	if (!g_bD3DReady)
 		return;
@@ -196,13 +177,16 @@ static void SetButtonPress(const char* msg)
 	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, COLOR_BACKGROUND, 1.0f, 0);
 	g_pDevice->BeginScene();
 	g_Font.DrawText(40, 40, COLOR_HEADER, g_wszHeader, 0);
-	g_Font.DrawText(40, 55, COLOR_BUTTON, g_wszStatus, 0);
+	if (g_cfg.UI_SingleColour)
+		g_Font.DrawText(40, 55, COLOR_ALT, g_wszStatus, 0);
+	else
+		g_Font.DrawText(40, 55, COLOR_BUTTON, g_wszStatus, 0);
 	g_pDevice->EndScene();
 	g_pDevice->Present(NULL, NULL, NULL, NULL);
 }
 
 
-static void SetError(const char* msg)
+static void ShowErrorScreen(const char* msg)
 {
 	if (!g_bD3DReady)
 		return;
@@ -217,35 +201,78 @@ static void SetError(const char* msg)
 }
 
 
+static void ShowGeneralScreen(const char* msg)
+{
+	if (!g_bD3DReady)
+		return;
+
+	ToWide(msg, g_wszStatus, 512);
+	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, COLOR_BACKGROUND, 1.0f, 0);
+	g_pDevice->BeginScene();
+	g_Font.DrawText(40, 40, COLOR_HEADER, g_wszHeader, 0);
+	if (g_cfg.UI_SingleColour)
+		g_Font.DrawText(40, 55, COLOR_ALT, g_wszStatus, 0);
+	else
+		g_Font.DrawText(40, 55, COLOR_GENERAL, g_wszStatus, 0);
+	g_pDevice->EndScene();
+	g_pDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+
+static void ShowLaunchScreen(const char* msg)
+{
+	if (!g_bD3DReady)
+		return;
+
+	ToWide(msg, g_wszStatus, 512);
+	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, COLOR_BACKGROUND, 1.0f, 0);
+	g_pDevice->BeginScene();
+	g_Font.DrawText(40, 40, COLOR_HEADER, g_wszHeader, 0);
+	if (g_cfg.UI_SingleColour)
+		g_Font.DrawText(40, 55, COLOR_ALT, g_wszStatus, 0);
+	else
+		g_Font.DrawText(40, 55, COLOR_STATUS, g_wszStatus, 0);
+	g_pDevice->EndScene();
+	g_pDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+
 static void try_launch(const char* description, const char* path)
 {
-	char msg[MAX_PATH + 64];
-	debuglog("  > %s", path);
+	char msg[MAX_PATH_LEN + 64];
+	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") == 0)
+		debuglog("  > Intact");
+	else
+		debuglog("  > %s", path);
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
-		sprintf(msg, "  Launching: %s", description);
-		SetStatus(msg);
+		_snprintf(msg, sizeof(msg), "  Launching: %s", description);
+		msg[sizeof(msg) - 1] = '\0';
+		ShowLaunchScreen(msg);
 		Sleep(g_cfg.UI_LaunchDelay);
 		CloseUI();
 	}
 
 	XLaunchXBE(path);
-	debuglog("    > not found");
+	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") != 0)
+		debuglog("    > not found");
 }
+
 
 static void try_launch_btn(const char* description, const char* path)
 {
 	if (!path || path[0] == '\0')
 		return;
 
-	char msg[MAX_PATH + 64];
+	char msg[MAX_PATH_LEN + 64];
 	debuglog("  > %s", path);
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
-		sprintf(msg, "  Launching: %s", description);
-		SetButtonPress(msg);
+		_snprintf(msg, sizeof(msg), "  Launching: %s", description);
+		msg[sizeof(msg) - 1] = '\0';
+		ShowButtonPressScreen(msg);
 		Sleep(g_cfg.UI_LaunchDelay);
 		CloseUI();
 	}
@@ -253,6 +280,29 @@ static void try_launch_btn(const char* description, const char* path)
 	XLaunchXBE(path);
 	debuglog("    > not found");
 }
+
+
+static void try_launch_error(const char* description, const char* path)
+{
+	if (!path || path[0] == '\0')
+		return;
+
+	char msg[MAX_PATH_LEN + 64];
+	debuglog("  > %s", path);
+
+	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
+	{
+		_snprintf(msg, sizeof(msg), "  Launching: %s", description);
+		msg[sizeof(msg) - 1] = '\0';
+		ShowErrorScreen(msg);
+		Sleep(3000);
+		CloseUI();
+	}
+
+	XLaunchXBE(path);
+	debuglog("    > not found");
+}
+
 
 static void fail_reboot()
 {
@@ -265,6 +315,7 @@ static void fail_reboot()
 	}
 	XReboot();
 }
+
 
 static int buttons_held_count()
 {

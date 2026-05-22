@@ -48,22 +48,22 @@ void __stdcall HalReturnToFirmware(RETURN_FIRMWARE Routine);
 #define STATUS_SUCCESS 0x00000000
 typedef struct _DRIVEMAPPING
 {
-	char szDriveLetter;
+	char szDriveLetter[4];
 	char* szDevice;
 	int iPartition;
 } DRIVEMAPPING;
 DRIVEMAPPING g_driveMapping[] =
 {
-	{ 'C', "Harddisk0\\Partition2", 2},
-	{ 'D', "Cdrom0", -1},
-	{ 'VD', "Cdrom1", -1},
-	{ 'E', "Harddisk0\\Partition1", 1},
-	{ 'F', "Harddisk0\\Partition6", 6},
-	{ 'X', "Harddisk0\\Partition3", 3},
-	{ 'Y', "Harddisk0\\Partition4", 4},
-	{ 'Z', "Harddisk0\\Partition5", 5},
-	{ 'G', "Harddisk0\\Partition7", 7},
-	{ 'R', "Harddisk0\\Partition14", 14},
+	{ "C", "Harddisk0\\Partition2", 2},
+	{ "D", "Cdrom0", -1},
+	{ "VD", "Cdrom1", -1},
+	{ "E", "Harddisk0\\Partition1", 1},
+	{ "F", "Harddisk0\\Partition6", 6},
+	{ "X", "Harddisk0\\Partition3", 3},
+	{ "Y", "Harddisk0\\Partition4", 4},
+	{ "Z", "Harddisk0\\Partition5", 5},
+	{ "G", "Harddisk0\\Partition7", 7},
+	{ "R", "Harddisk0\\Partition14", 14},
 };
 #define NUM_OF_DRIVES ( sizeof( g_driveMapping) / sizeof( g_driveMapping[0] ) )
 int  XGetTickCount() { return GetTickCount(); }
@@ -72,19 +72,22 @@ long XUnmount(const char* szDrive)
 {
 	char szDestinationDrive[16];
 	ANSI_STRING LinkName;
-	sprintf(szDestinationDrive, "\\??\\%s", szDrive);
+	_snprintf(szDestinationDrive, sizeof(szDestinationDrive), "\\??\\%s", szDrive);
+	szDestinationDrive[sizeof(szDestinationDrive) - 1] = '\0';
 	LinkName.Length = strlen(szDestinationDrive);
 	LinkName.MaximumLength = sizeof(szDestinationDrive);
 	LinkName.Buffer = szDestinationDrive;
 	return( IoDeleteSymbolicLink(&LinkName) == STATUS_SUCCESS );
 }
-long XMount(const char* szDrive, char* szDevice)
+long XMount(const char* szDrive, const char* szDevice)
 {
 	char szSourceDevice[MAX_PATH];
 	char szDestinationDrive[16];
 	ANSI_STRING DeviceName, LinkName;
-	sprintf(szSourceDevice, "%s", szDevice);
-	sprintf(szDestinationDrive, "\\??\\%s", szDrive);
+	_snprintf(szSourceDevice, sizeof(szSourceDevice), "%s", szDevice);
+	szSourceDevice[sizeof(szSourceDevice) - 1] = '\0';
+	_snprintf(szDestinationDrive, sizeof(szDestinationDrive), "\\??\\%s", szDrive);
+	szDestinationDrive[sizeof(szDestinationDrive) - 1] = '\0';
 	DeviceName.Length = strlen(szSourceDevice);
 	DeviceName.MaximumLength = sizeof(szSourceDevice);
 	DeviceName.Buffer = szSourceDevice;
@@ -133,9 +136,14 @@ void XMountRunningXBEDir()
 void XLaunchXBE(const char* fullpath)
 {
 	char* xbename;
-	char devicepath[MAX_PATH];
-	char launchpath[MAX_PATH];
+	char devicepath[520];
+	char launchpath[520];
 	char* lastslash;
+	
+	// Unmount temp partitions
+	XUnmount("R:");
+	XUnmount("VD:");
+	
 	OutputDebugString(__FUNCTION__" - Path: ");
 	OutputDebugString(fullpath);
 	OutputDebugString("\n");
@@ -146,25 +154,36 @@ void XLaunchXBE(const char* fullpath)
 		return;
 	}
 	xbename++;
-	if( fullpath[1] == ':' )
+	if( fullpath[1] == ':' || (fullpath[0] != '\0' && fullpath[1] != '\0' && fullpath[2] == ':') )
 	{
-		char drive = toupper(fullpath[0]);
+		char drive[4] = {0};
 		int i;
+		int offset;
+		if (fullpath[1] == ':') {
+			drive[0] = toupper(fullpath[0]);
+		} else {
+			drive[0] = toupper(fullpath[0]);
+			drive[1] = toupper(fullpath[1]);
+		}
 		/* lookup partition path for given drive */
+		devicepath[0] = '\0';
 		for(i = 0; i < NUM_OF_DRIVES; i++)
 		{
-			if( drive == g_driveMapping[i].szDriveLetter )
+			if( strcmp(drive, g_driveMapping[i].szDriveLetter) == 0 )
 			{
-				strcpy(devicepath, "\\Device\\");
-				strcat(devicepath, g_driveMapping[i].szDevice);
+				_snprintf(devicepath, sizeof(devicepath), "\\Device\\%s", g_driveMapping[i].szDevice);
 				break;
 			}
 		}
 		/* add the rest of the path */
-		strcat(devicepath, fullpath+2);
+		offset = (fullpath[1] == ':') ? 2 : 3;
+		_snprintf(devicepath + strlen(devicepath), sizeof(devicepath) - strlen(devicepath), "%s", fullpath + offset);
 	}
 	else
-	strcpy(devicepath, fullpath);
+	{
+		_snprintf(devicepath, sizeof(devicepath), "%s", fullpath);
+	}
+	devicepath[sizeof(devicepath) - 1] = '\0';
 	OutputDebugString(__FUNCTION__" - Device Path: ");
 	OutputDebugString(devicepath);
 	OutputDebugString("\n");

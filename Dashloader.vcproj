@@ -327,22 +327,25 @@
 				RelativePath=".\dashloader.cpp">
 			</File>
 			<File
+				RelativePath=".\dashloader_ini.h">
+			</File>
+			<File
 				RelativePath=".\dashloader_shortcut.h">
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbapp.cpp">
+				RelativePath="$(ProgramFiles)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbapp.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbinput.cpp">
+				RelativePath="$(ProgramFiles)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbinput.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbfont.cpp">
+				RelativePath="$(ProgramFiles)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbfont.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbresource.cpp">
+				RelativePath="$(ProgramFiles)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbresource.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbutil.cpp">
+				RelativePath="$(ProgramFiles)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbutil.cpp">
 			</File>
 		</Filter>
 	</Files>

@@ -1,3 +1,17 @@
+Version 2.1.1
+
+	1)  Fixed M8+ detection so 1.6 kernels don't try to get patched
+
+	2)  Updated some of the code to be better and simpler.
+
+	3)  Better Cerbios detection for ISOs being mounted.
+
+	4)  Removed the Ind-Bios loading of D:\default.xbe use the Cerbios attacher.
+		This fixed having to double IGR if using Cerbios attacher.
+
+	5)  Added the option to select single colour if you don't like the multi colours
+
+
 Version 2.0.0
 
 Features:
@@ -9,7 +23,7 @@ Features:
 
 	2)  Dashloader.ini
 		This is the new home of settings & button mappings.
-		It sits next the the xbe file. (wherever that maybe)
+		It sits next to the xbe file. (wherever that maybe)
 
 	3)  Universal
 		Works on hardmods & softmods.

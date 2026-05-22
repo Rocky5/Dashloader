@@ -7,7 +7,7 @@ extern "C" {
 	void XSleep(int milliseconds);
 	void XLaunchXBE(const char* path);
 	long XUnmount(const char* szDrive);
-	long XMount(const char* szDrive, char* szDevice);
+	long XMount(const char* szDrive, const char* szDevice);
 	void XMountRunningXBEDir();
 	void XGetXBEName(char* dst, int maxlen);
 	void debugPrint(const char*, ...);
