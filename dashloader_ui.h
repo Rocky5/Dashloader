@@ -135,9 +135,17 @@ static void InitD3D()
 		d3dpp.Flags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
 	}
 	else if (dwVideoFlags & XC_VIDEO_FLAGS_HDTV_480p)
+	{
+		d3dpp.BackBufferWidth = 720;
+		d3dpp.BackBufferHeight = 480;
 		d3dpp.Flags = D3DPRESENTFLAG_PROGRESSIVE;
+	}
 	else if (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I)
-		d3dpp.Flags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_FIELD;
+	{
+		d3dpp.BackBufferWidth = 720;
+		d3dpp.BackBufferHeight = 576;
+		d3dpp.Flags = D3DPRESENTFLAG_INTERLACED;
+	}
 	else
 		d3dpp.Flags = D3DPRESENTFLAG_INTERLACED;
 

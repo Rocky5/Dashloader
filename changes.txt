@@ -1,3 +1,9 @@
+Version 2.1.2
+
+	1)  Fixed PAL now outputting anything.
+		Thank you Openhandhelds for noticing
+
+
 Version 2.1.1
 
 	1)  Fixed M8+ detection so 1.6 kernels don't try to get patched

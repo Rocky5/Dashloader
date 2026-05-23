@@ -21,7 +21,7 @@
 #include "external.h"
 #include "dashloader_ui.h"
 
-#define BUILD_VERSION "2.0.1"
+#define BUILD_VERSION "2.0.2"
 
 #define INI_FILE "D:\\Dashloader.ini"
 
