@@ -23,7 +23,7 @@
 #include "external.h"
 #include "dashloader_ui.h"
 
-#define BUILD_VERSION "2.1.2"
+#define BUILD_VERSION "2.1.3"
 
 #define INI_FILE         "D:\\Dashloader.ini"
 
@@ -183,15 +183,30 @@ void __cdecl main()
 		skip_dismount:;
 	}
 
+	// This always gets checked first
+	debuglog("  Prep dashboard");
+	try_launch("Prep dashboard", "E:\\Prep\\Default.xbe");
+
 	// Rocky5 Softmod only
 	if (softmodded)
 	{
+		debuglog("  Quick Update/Upgrade dashboard");
+		try_launch("Quick Update dashboard", "E:\\Quick Update\\Default.xbe");
+		try_launch("Quick Upgrade dashboard", "E:\\Quick Upgrade\\Default.xbe");
+
 		debuglog("");
 		debuglog("[Integrity Check]");
 		debuglog("  ShadowC Partition");
 		try_launch_error("ShadowC rescue dashboard", "C:\\nkpatcher\\rescuedash\\loader.xbe");
 	}
 
+	if (file_exist(ES_IGR))
+	{
+		debuglog("  Relaunch XBMC-Emustation");
+		try_launch("XBMC-Emustation return to rom-list", ES_IGR);
+	}
+
+	// Check for button presses
 	ShowGeneralScreen("Hold a button to select dashboard...");
 	Sleep(g_cfg.UI_Enabled ? 1000 : 300);
 
@@ -293,22 +308,6 @@ void __cdecl main()
 	{
 		ShowGeneralScreen("Checking dashboard paths...");
 		Sleep(debuggingDelay);
-	}
-	debuglog("  Prep dashboard");
-	try_launch("Prep dashboard", "E:\\Prep\\Default.xbe");
-
-	// Rocky5 Softmod only
-	if (softmodded)
-	{
-		debuglog("  Quick Update/Upgrade dashboard");
-		try_launch("Quick Update dashboard", "E:\\Quick Update\\Default.xbe");
-		try_launch("Quick Upgrade dashboard", "E:\\Quick Upgrade\\Default.xbe");
-	}
-
-	if (file_exist(ES_IGR))
-	{
-		debuglog("  Relaunch XBMC-Emustation");
-		try_launch("XBMC-Emustation return to rom-list", ES_IGR);
 	}
 
 	debuglog("  Custom Dashboard");
