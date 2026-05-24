@@ -184,12 +184,15 @@ void __cdecl main()
 	}
 
 	// This always gets checked first
+	debuglog("");
+	debuglog("[Setup and Updates]");
 	debuglog("  Prep dashboard");
 	try_launch("Prep dashboard", "E:\\Prep\\Default.xbe");
 
 	// Rocky5 Softmod only
 	if (softmodded)
 	{
+		debuglog("");
 		debuglog("  Quick Update/Upgrade dashboard");
 		try_launch("Quick Update dashboard", "E:\\Quick Update\\Default.xbe");
 		try_launch("Quick Upgrade dashboard", "E:\\Quick Upgrade\\Default.xbe");
