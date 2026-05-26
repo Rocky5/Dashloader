@@ -1,3 +1,13 @@
+Version 2.1.4
+
+	1)  Some logging fixes
+
+	2)  Fixed trailing whitespace loop
+
+	3)  Added in safe guard for try_launch
+		Like try_launch_btn & try_launch_error, I forgot to add it.
+
+
 Version 2.1.3
 
 	1)  Forgot to move up the prep and softmod exclusive checks above button holding.

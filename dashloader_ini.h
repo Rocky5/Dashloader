@@ -59,7 +59,7 @@ static void ini_trim(char* s)
 
 	while (start < len && (s[start] == ' ' || s[start] == '\t'))
 		start++;
-	while (end > start && (s[end] == ' ' || s[end] == '\t' || s[end] == '\r' || s[end] == '\n'))
+	while (end >= start && (s[end] == ' ' || s[end] == '\t' || s[end] == '\r' || s[end] == '\n'))
 		end--;
 
 	int newlen = end - start + 1;

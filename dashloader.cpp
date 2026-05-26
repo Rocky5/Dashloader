@@ -23,7 +23,7 @@
 #include "external.h"
 #include "dashloader_ui.h"
 
-#define BUILD_VERSION "2.1.3"
+#define BUILD_VERSION "2.1.4"
 
 #define INI_FILE         "D:\\Dashloader.ini"
 
@@ -306,17 +306,18 @@ void __cdecl main()
 		Sleep(1);
 	}
 
-	debuglog("");
-	debuglog("[Dashboard]");
 	if (g_cfg.UI_Enabled)
 	{
 		ShowGeneralScreen("Checking dashboard paths...");
 		Sleep(debuggingDelay);
 	}
 
-	debuglog("  Custom Dashboard");
 	if (g_cfg.Dashboard_Path[0])
-		try_launch("Custom dashboard", g_cfg.Dashboard_Path);
+	{
+		debuglog("");
+		debuglog("[Override Dashboard]");
+		try_launch("Dashboard", g_cfg.Dashboard_Path);
+	}
 
 	debuglog("");
 	debuglog("[Locations]");

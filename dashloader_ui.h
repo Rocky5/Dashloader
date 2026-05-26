@@ -247,6 +247,9 @@ static void ShowLaunchScreen(const char* msg)
 
 static void try_launch(const char* description, const char* path)
 {
+	if (!path || path[0] == '\0')
+		return;
+
 	char msg[MAX_PATH_LEN + 64];
 	debuglog("  > %s", path);
 
