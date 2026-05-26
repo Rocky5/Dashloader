@@ -44,6 +44,8 @@ unsigned long IOCTL_VIRTUAL_CDROM;
 
 void __cdecl main()
 {
+	XMountRunningXBEDir();
+	// Don't need to mount C and E but just in the off change pigs fly
 	XMount("C:", "\\Device\\Harddisk0\\Partition2");
 	XMount("E:", "\\Device\\Harddisk0\\Partition1");
 	XMount("F:", "\\Device\\Harddisk0\\Partition6");
@@ -55,7 +57,6 @@ void __cdecl main()
 	CreateDirectory("E:\\CACHE", NULL);
 
 	// Load config from D:\Dashloader.ini (next to XBE)
-	XMountRunningXBEDir();
 	ini_load(&g_cfg, INI_FILE);
 
 	if (g_cfg.Log_Enabled)

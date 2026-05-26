@@ -248,10 +248,7 @@ static void ShowLaunchScreen(const char* msg)
 static void try_launch(const char* description, const char* path)
 {
 	char msg[MAX_PATH_LEN + 64];
-	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") == 0)
-		debuglog("  > Intact");
-	else
-		debuglog("  > %s", path);
+	debuglog("  > %s", path);
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
@@ -263,8 +260,7 @@ static void try_launch(const char* description, const char* path)
 	}
 
 	XLaunchXBE(path);
-	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") != 0)
-		debuglog("    > not found");
+	debuglog("    > not found");
 }
 
 
@@ -296,7 +292,10 @@ static void try_launch_error(const char* description, const char* path)
 		return;
 
 	char msg[MAX_PATH_LEN + 64];
-	debuglog("  > %s", path);
+	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") == 0)
+		debuglog("  > Intact");
+	else
+		debuglog("  > %s", path);
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
@@ -308,7 +307,8 @@ static void try_launch_error(const char* description, const char* path)
 	}
 
 	XLaunchXBE(path);
-	debuglog("    > not found");
+	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") != 0)
+		debuglog("    > not found");
 }
 
 
