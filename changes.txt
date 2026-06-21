@@ -1,3 +1,7 @@
+Version 2.1.5
+	1) Fixed emustation igr file, forgot to read the file :/
+
+
 Version 2.1.4
 
 	1)  Some logging fixes

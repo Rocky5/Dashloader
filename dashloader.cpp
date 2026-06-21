@@ -23,7 +23,7 @@
 #include "external.h"
 #include "dashloader_ui.h"
 
-#define BUILD_VERSION "2.1.4"
+#define BUILD_VERSION "2.1.5"
 
 #define INI_FILE         "D:\\Dashloader.ini"
 
@@ -204,10 +204,26 @@ void __cdecl main()
 		try_launch_error("ShadowC rescue dashboard", "C:\\nkpatcher\\rescuedash\\loader.xbe");
 	}
 
-	if (file_exist(ES_IGR))
+	FILE* esigr = fopen(ES_IGR, "r");
+	if (esigr)
 	{
-		debuglog("  Relaunch XBMC-Emustation");
-		try_launch("XBMC-Emustation return to rom-list", ES_IGR);
+		char igrPath[MAX_PATH_LEN] = {0};
+		if (fgets(igrPath, sizeof(igrPath), esigr))
+		{
+			fclose(esigr);
+			remove(ES_IGR);
+			char* newline = strchr(igrPath, '\n');
+			if (newline) *newline = '\0';
+			newline = strchr(igrPath, '\r');
+			if (newline) *newline = '\0';
+			if (igrPath[0])
+			{
+				debuglog("  Relaunch XBMC-Emustation: %s", igrPath);
+				try_launch("XBMC-Emustation return to rom-list", igrPath);
+			}
+		}
+		else
+			fclose(esigr);
 	}
 
 	// Check for button presses
