@@ -150,7 +150,7 @@ void XLaunchXBE(const char* fullpath)
 	xbename = strrchr(fullpath, '\\');
 	if( xbename == NULL )
 	{
-		OutputDebugString(__FUNCTION__" - Unable to find xbename\n");
+		OutputDebugString(__FUNCTION__" - Unable to find xbe name\n");
 		return;
 	}
 	xbename++;

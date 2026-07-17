@@ -38,6 +38,13 @@ Placed in `C:\Bios Loader\`. Only the logging setting is used, all other setting
 
 ---
 
+### FTP
+
+FTP uses the ftp details stored in the eeprom.
+Hold Start + Black on load.
+
+---
+
 ### Why use this?
 
 I made this as I was doing the config editor in XBMC4Gamers for Cerbios (my own choice) and I overclocked too much and soft bricked my Xbox. So I made this so I could get something akin to Cerbios safe mode on a softmodded Xbox.

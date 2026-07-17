@@ -14,6 +14,7 @@
 */
 
 #include <xtl.h>
+#include "ftp.h"
 #include "msxdk.h"
 #include <string.h>
 #include <stdio.h>
@@ -22,18 +23,19 @@
 #include "kernelpatcher.h"
 #include "external.h"
 #include "dashloader_ui.h"
+#include "dashloader_ftp.h"
 
-#define BUILD_VERSION "2.1.5"
+#define BUILD_VERSION "2.2.0"
 
-#define INI_FILE         "D:\\Dashloader.ini"
+#define INI_FILE      "D:\\Dashloader.ini"
 
-#define ES_IGR           "E:\\CACHE\\LocalCache20.bin"
-#define PATCHER_FILE     "E:\\CACHE\\LocalCache40.bin"
+#define ES_IGR        "E:\\CACHE\\LocalCache20.bin"
+#define PATCHER_FILE  "E:\\CACHE\\LocalCache40.bin"
 
-#define PATCHED_IND      ((char*)0x8002B4B7)
-#define PATCHED_M8       ((char*)0x8002691E)
-#define M8_CHECK1        ((char*)0x80026919)
-#define M8_CHECK2        ((char*)0x8002691D)
+#define PATCHED_IND   ((char*)0x8002B4B7)
+#define PATCHED_M8    ((char*)0x8002691E)
+#define M8_CHECK1     ((char*)0x80026919)
+#define M8_CHECK2     ((char*)0x8002691D)
 
 DASHLOADER_CONFIG g_cfg;
 
@@ -45,7 +47,6 @@ unsigned long IOCTL_VIRTUAL_CDROM;
 void __cdecl main()
 {
 	XMountRunningXBEDir();
-	// Don't need to mount C and E but just in the off change pigs fly
 	XMount("C:", "\\Device\\Harddisk0\\Partition2");
 	XMount("E:", "\\Device\\Harddisk0\\Partition1");
 	XMount("F:", "\\Device\\Harddisk0\\Partition6");
@@ -184,6 +185,29 @@ void __cdecl main()
 		skip_dismount:;
 	}
 
+	// Sleep to let gamepad and UI settle
+	Sleep(300);
+
+	// Run FTP server
+	int timer = 0;
+	while (timer++ <= 100)
+	{
+		XBInput_GetInput(m_Gamepad);
+		ZeroMemory(&m_DefaultGamepad, sizeof(m_DefaultGamepad));
+		for (DWORD i = 0; i < 4; i++ && m_Gamepad[i].hDevice)
+			m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
+
+		if ((m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB))
+		{
+			if (!g_cfg.UI_Enabled)
+				InitD3D();
+			ToWide("Dashloader v" BUILD_VERSION, g_wszHeader, 64);
+			RunFTP(0,softmodded);
+			fail_reboot();
+		}
+		Sleep(1);
+	}
+
 	// This always gets checked first
 	debuglog("");
 	debuglog("[Setup and Updates]");
@@ -228,33 +252,20 @@ void __cdecl main()
 
 	// Check for button presses
 	ShowGeneralScreen("Hold a button to select dashboard...");
-	Sleep(g_cfg.UI_Enabled ? 1000 : 300);
+	Sleep(g_cfg.UI_Enabled ? 700 : 0);
 
 	BOOL buttonFired = FALSE;
-	int timer = 0;
+	timer = 0;
 	while (timer++ <= g_cfg.UI_ButtonDelay)
 	{
 		XBInput_GetInput(m_Gamepad);
 
 		ZeroMemory(&m_DefaultGamepad, sizeof(m_DefaultGamepad));
-		for (DWORD i = 0; i < 4; i++)
+		for (DWORD i = 0; i < 4; i++ && m_Gamepad[i].hDevice)
 		{
-			if (m_Gamepad[i].hDevice)
-			{
-				m_DefaultGamepad.fX1 += m_Gamepad[i].fX1;
-				m_DefaultGamepad.fY1 += m_Gamepad[i].fY1;
-				m_DefaultGamepad.fX2 += m_Gamepad[i].fX2;
-				m_DefaultGamepad.fY2 += m_Gamepad[i].fY2;
-				m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
-				m_DefaultGamepad.wPressedButtons |= m_Gamepad[i].wPressedButtons;
-				m_DefaultGamepad.wLastButtons |= m_Gamepad[i].wLastButtons;
-				for (DWORD b = 0; b < 8; b++)
-				{
-					m_DefaultGamepad.bAnalogButtons[b] |= m_Gamepad[i].bAnalogButtons[b];
-					m_DefaultGamepad.bPressedAnalogButtons[b] |= m_Gamepad[i].bPressedAnalogButtons[b];
-					m_DefaultGamepad.bLastAnalogButtons[b] |= m_Gamepad[i].bLastAnalogButtons[b];
-				}
-			}
+			m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
+			for (DWORD b = 0; b < 8; b++)
+				m_DefaultGamepad.bAnalogButtons[b] |= m_Gamepad[i].bAnalogButtons[b];
 		}
 
 		if (!buttonFired && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y] && (m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_START))
@@ -347,7 +358,6 @@ void __cdecl main()
 	try_launch("E:\\XBMC.xbe", "E:\\XBMC.xbe");
 	try_launch("E:\\Evoxdash.xbe", "E:\\Evoxdash.xbe");
 
-
 	try_launch("C:\\XBMC-Emustation", "C:\\XBMC-Emustation\\Default.xbe");
 	try_launch("C:\\XBMC4Gamers", "C:\\XBMC4Gamers\\Default.xbe");
 	try_launch("C:\\XBMC4Xbox", "C:\\XBMC4Xbox\\Default.xbe");
@@ -377,19 +387,10 @@ void __cdecl main()
 		try_launch_error("ShadowC rescue dashboard", "R:\\NKPatcher\\rescuedash\\loader.xbe");
 
 	// If you're here show UI and count down
-	debuglog("All failed. :( Insert a disc and load from there");
+	debuglog("All failed. :( Insert a disc or connect via FTP");
 	if (!g_cfg.UI_Enabled)
 		InitD3D();
 	ToWide("Dashloader v" BUILD_VERSION, g_wszHeader, 64);
-	int failedTimer = 120;
-	char msg[256];
-	while (failedTimer >= 0)
-	{
-		_snprintf(msg, sizeof(msg), "All failed. :( Insert a disc and reboot.\nRebooting in %d", failedTimer);
-		msg[sizeof(msg) - 1] = '\0';
-		ShowErrorScreen(msg);
-		Sleep(1000);
-		failedTimer--;
-	}
+	RunFTP(1,softmodded);
 	fail_reboot();
 }

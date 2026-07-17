@@ -24,8 +24,8 @@
 #include "xbinput.h"
 
 // Gamepad members
-XBGAMEPAD* m_Gamepad;
-XBGAMEPAD  m_DefaultGamepad;
+static XBGAMEPAD* m_Gamepad;
+static XBGAMEPAD  m_DefaultGamepad;
 
 #define COLOR_BACKGROUND 0xFF000000  //0xFF152E55
 #define COLOR_HEADER     0xFFFFFFFF
@@ -46,14 +46,14 @@ static WCHAR g_wszHeader[64];
 static WCHAR g_wszStatus[512];
 
 
-int file_exist(char* name)
+static int file_exist(char* name)
 {
 	struct stat buffer;
 	return (stat(name, &buffer) == 0);
 }
 
 
-void debuglog(const char* format, ...)
+static void debuglog(const char* format, ...)
 {
 	if (!g_cfg.Log_Enabled)
 		return;
@@ -81,7 +81,7 @@ static void ToWide(const char* src, WCHAR* dst, int maxlen)
 }
 
 
-extern "C" void CloseUI()
+static void CloseUI()
 {
 	if (!g_bD3DReady)
 		return;
@@ -106,10 +106,15 @@ extern "C" void CloseUI()
 static void InitD3D()
 {
 	int i;
-	std::ofstream writeFont("Z:\\font.xpr", std::ios::binary);
-	for (i = 0; i < sizeof(font_data); i++)
-		writeFont << font_data[i];
-	writeFont.close();
+	// Write font to UDATA only if missing
+	if (!file_exist("E:\\UDATA\\09999996\\font.xpr"))
+	{
+		CreateDirectory("E:\\UDATA\\09999996", NULL);
+		std::ofstream writeFont("E:\\UDATA\\09999996\\font.xpr", std::ios::binary);
+		for (i = 0; i < sizeof(font_data); i++)
+			writeFont << font_data[i];
+		writeFont.close();
+	}
 
 	g_pD3D = Direct3DCreate8(D3D_SDK_VERSION);
 	if (!g_pD3D)
@@ -160,7 +165,7 @@ static void InitD3D()
 	extern LPDIRECT3DDEVICE8 g_pd3dDevice;
 	g_pd3dDevice = g_pDevice;
 
-	XBUtil_SetMediaPath("Z:\\");
+	XBUtil_SetMediaPath("E:\\UDATA\\09999996\\");
 
 	if (FAILED(g_Font.Create("font.xpr", 0)))
 	{
@@ -247,15 +252,12 @@ static void ShowLaunchScreen(const char* msg)
 
 static void try_launch(const char* description, const char* path)
 {
-	if (!path || path[0] == '\0')
-		return;
-
 	char msg[MAX_PATH_LEN + 64];
 	debuglog("  > %s", path);
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
-		_snprintf(msg, sizeof(msg), "  Launching: %s", description);
+		_snprintf(msg, sizeof(msg), "Launching: %s", description);
 		msg[sizeof(msg) - 1] = '\0';
 		ShowLaunchScreen(msg);
 		Sleep(g_cfg.UI_LaunchDelay);
@@ -277,7 +279,7 @@ static void try_launch_btn(const char* description, const char* path)
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
-		_snprintf(msg, sizeof(msg), "  Launching: %s", description);
+		_snprintf(msg, sizeof(msg), "Launching: %s", description);
 		msg[sizeof(msg) - 1] = '\0';
 		ShowButtonPressScreen(msg);
 		Sleep(g_cfg.UI_LaunchDelay);
@@ -302,7 +304,7 @@ static void try_launch_error(const char* description, const char* path)
 
 	if (file_exist(const_cast<char*>(path)) && g_cfg.UI_Enabled)
 	{
-		_snprintf(msg, sizeof(msg), "  Launching: %s", description);
+		_snprintf(msg, sizeof(msg), "Launching: %s", description);
 		msg[sizeof(msg) - 1] = '\0';
 		ShowErrorScreen(msg);
 		Sleep(3000);
@@ -310,7 +312,9 @@ static void try_launch_error(const char* description, const char* path)
 	}
 
 	XLaunchXBE(path);
-	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") != 0)
+	if (_stricmp(path, "C:\\nkpatcher\\rescuedash\\loader.xbe") == 0)
+		debuglog("    > ShadowC recovery dash is missing :O");
+	else
 		debuglog("    > not found");
 }
 

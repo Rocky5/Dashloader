@@ -34,7 +34,11 @@
 - Now wont accept more than 1 button pressed
 - Unless I have hardcoded it. (Start+Y for recovery dash loading)
 
-### 9) Updated dashboard path order
+### 9) FTP support
+- Hold R3 (right stick pressed in) on load.
+- It uses the default network settings set in your dashboard/MSDash
+
+### 10) Updated dashboard path order
 You can override these by setting a path to a valid xbe in
 - [Dashboard]
 - Path
@@ -117,6 +121,8 @@ It’s now basically a full rewrite, so thanks to the XBMC team for the original c
 **1.0.0 > 1.4.3**
 
 Microsoft for the samples, without those I wouldn't have got video working.
+
+Darkone83 for the FTP code src: https://github.com/Darkone83/DarkDash
 
 ---
 

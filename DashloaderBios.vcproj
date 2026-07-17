@@ -36,7 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3d8d.lib d3dx8d.lib xgraphicsd.lib xboxkrnl.lib xbdm.lib"
+				AdditionalDependencies="xapilibd.lib d3d8d.lib d3dx8d.lib xgraphicsd.lib xboxkrnl.lib xbdm.lib xnetd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib xboxkrnl.lib xbdm.lib xperf.lib"
+				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib xboxkrnl.lib xbdm.lib xperf.lib xnet.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -139,7 +139,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib xboxkrnl.lib xbdm.lib xperf.lib"
+				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib xboxkrnl.lib xbdm.lib xperf.lib xnet.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -191,7 +191,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8.lib d3dx8.lib xgraphics.lib xboxkrnl.lib"
+				AdditionalDependencies="xapilib.lib d3d8.lib d3dx8.lib xgraphics.lib xboxkrnl.lib xnet.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -217,7 +217,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="65536"
-				TitleID="0x21585554"
+				TitleID="0x09999909"
 				TitleName="Dashloader Bios Recovery Loader"/>
 		</Configuration>
 		<Configuration
@@ -248,7 +248,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib xboxkrnl.lib"
+				AdditionalDependencies="xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib xboxkrnl.lib xnet.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -271,7 +271,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="65536"
-				TitleID="0x21585554"
+				TitleID="0x09999909"
 				TitleName="Dashloader Bios Recovery Loader"/>
 		</Configuration>
 		<Configuration
@@ -321,10 +321,16 @@
 				RelativePath=".\msxdk.h">
 			</File>
 			<File
+				RelativePath=".\ftp.cpp">
+			</File>
+			<File
 				RelativePath=".\dashloaderbios.cpp">
 			</File>
 			<File
 				RelativePath=".\dashloader_ini.h">
+			</File>
+			<File
+				RelativePath=".\dashloader_shortcut.h">
 			</File>
 			<File
 				RelativePath="$(ProgramFiles)\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbapp.cpp">

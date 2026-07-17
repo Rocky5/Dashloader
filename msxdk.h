@@ -1,3 +1,5 @@
+#ifndef MSXDK_H
+#define MSXDK_H
 #include "xtl.h"
 #ifdef __cplusplus
 extern "C" {
@@ -29,4 +31,5 @@ extern "C" {
 	extern XBOX_KRNL_VERSION* XboxKrnlVersion;
 #ifdef __cplusplus
 }
+#endif
 #endif

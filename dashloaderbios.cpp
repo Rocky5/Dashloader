@@ -14,14 +14,16 @@
 */
 
 #include <xtl.h>
+#include "ftp.h"
 #include "msxdk.h"
 #include <string.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include "external.h"
 #include "dashloader_ui.h"
+#include "dashloader_ftp.h"
 
-#define BUILD_VERSION "2.0.2"
+#define BUILD_VERSION "2.1.0"
 
 #define INI_FILE "D:\\Dashloader.ini"
 
@@ -31,6 +33,7 @@ void __cdecl main()
 {
 	XMountRunningXBEDir();
 	XMount("C:", "\\Device\\Harddisk0\\Partition2");
+	XMount("E:", "\\Device\\Harddisk0\\Partition1");
 
 	// Load config from D:\Dashloader.ini (next to XBE)
 	ini_load(&g_cfg, INI_FILE);
@@ -52,26 +55,12 @@ void __cdecl main()
 	while (timer++ <= 100)
 	{
 		XBInput_GetInput(m_Gamepad);
-
 		ZeroMemory(&m_DefaultGamepad, sizeof(m_DefaultGamepad));
-		for (DWORD i = 0; i < 4; i++)
+		for (DWORD i = 0; i < 4; i++ && m_Gamepad[i].hDevice)
 		{
-			if (m_Gamepad[i].hDevice)
-			{
-				m_DefaultGamepad.fX1 += m_Gamepad[i].fX1;
-				m_DefaultGamepad.fY1 += m_Gamepad[i].fY1;
-				m_DefaultGamepad.fX2 += m_Gamepad[i].fX2;
-				m_DefaultGamepad.fY2 += m_Gamepad[i].fY2;
-				m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
-				m_DefaultGamepad.wPressedButtons |= m_Gamepad[i].wPressedButtons;
-				m_DefaultGamepad.wLastButtons |= m_Gamepad[i].wLastButtons;
-				for (DWORD b = 0; b < 8; b++)
-				{
-					m_DefaultGamepad.bAnalogButtons[b] |= m_Gamepad[i].bAnalogButtons[b];
-					m_DefaultGamepad.bPressedAnalogButtons[b] |= m_Gamepad[i].bPressedAnalogButtons[b];
-					m_DefaultGamepad.bLastAnalogButtons[b] |= m_Gamepad[i].bLastAnalogButtons[b];
-				}
-			}
+			m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
+			for (DWORD b = 0; b < 8; b++)
+				m_DefaultGamepad.bAnalogButtons[b] |= m_Gamepad[i].bAnalogButtons[b];
 		}
 
 		if (!buttonFired && (m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_BACK) && (m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_START))
@@ -87,6 +76,14 @@ void __cdecl main()
 			debuglog("  Bios Recovery Mode");
 			try_launch("Bios Recovery dashboard", "C:\\Bios loader\\recovery.xbe");
 		}
+		else if ((m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB))
+		{
+			g_cfg.UI_Enabled = 1;
+			InitD3D();
+			ToWide("Dashloader Bios Recovery Loader v" BUILD_VERSION, g_wszHeader, 64);
+			RunFTP(1);
+			fail_reboot();
+		}
 
 		Sleep(1);
 	}
@@ -100,19 +97,10 @@ void __cdecl main()
 	try_launch("Bios Recovery dashboard", "C:\\Bios loader\\recovery.xbe");
 
 	// If you're here show UI and count down
-	debuglog("All failed. :( Insert a disc and load from there");
+	debuglog("All failed. :( Insert a disc or connect via FTP");
 	if (!g_cfg.UI_Enabled)
 		InitD3D();
 	ToWide("Dashloader Bios Recovery Loader " BUILD_VERSION, g_wszHeader, 64);
-	int failedTimer = 120;
-	char msg[256];
-	while (failedTimer >= 0)
-	{
-		_snprintf(msg, sizeof(msg), "All failed. :( Insert a disc and reboot.\nRebooting in %d", failedTimer);
-		msg[sizeof(msg) - 1] = '\0';
-		ShowErrorScreen(msg);
-		Sleep(1000);
-		failedTimer--;
-	}
+	RunFTP(1);
 	fail_reboot();
 }

@@ -1,5 +1,14 @@
+Version 2.2.0
+	1)  Added FTP support. 
+		It will use the network settings stored in the eeprom.
+		Used dd_ftp.cpp/.h from https://github.com/Darkone83/DarkDash
+		Thank you Darkone83
+
+	2)  Font.xpr is now stored in the E:\UDATA\09999996\
+
+
 Version 2.1.5
-	1) Fixed emustation igr file, forgot to read the file :/
+	1)  Fixed emustation igr file, forgot to read the file :/
 
 
 Version 2.1.4
