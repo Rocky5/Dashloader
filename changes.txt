@@ -1,3 +1,8 @@
+Version 2.2.1
+	1)  Updated VirtualDrive_ISOKernelPatch & VirtualDrive_DismountISOOnIGR to work correctly, 1 enables and 0 disables.
+		(This was inverted due to legacy migration, so fixed that dashloader customizer side also)
+
+
 Version 2.2.0
 	1)  Added FTP support. 
 		It will use the network settings stored in the eeprom.

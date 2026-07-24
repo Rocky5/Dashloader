@@ -46,7 +46,7 @@ typedef struct _DASHLOADER_CONFIG
 
 	// [VirtualDrive]
 	int VirtualDrive_ISOKernelPatch;
-	int VirtualDrive_DismountISOOnIGR;
+	int VirtualDrive_DismountISOonIGR;
 
 } DASHLOADER_CONFIG;
 
@@ -107,8 +107,8 @@ static void ini_set(DASHLOADER_CONFIG* cfg, const char* key, const char* val)
 		strncpy(cfg->Dashboard_Path, val, MAX_PATH_LEN - 1);
 	else if (_stricmp(key, "VirtualDrive_ISOKernelPatch") == 0)
 		cfg->VirtualDrive_ISOKernelPatch = atoi(val);
-	else if (_stricmp(key, "VirtualDrive_DismountISOOnIGR") == 0)
-		cfg->VirtualDrive_DismountISOOnIGR = atoi(val);
+	else if (_stricmp(key, "VirtualDrive_DismountISOonIGR") == 0)
+		cfg->VirtualDrive_DismountISOonIGR = atoi(val);
 }
 
 
@@ -131,7 +131,7 @@ static void ini_load(DASHLOADER_CONFIG* cfg, const char* ini_path)
 	cfg->Recovery_Path[0] = '\0';
 	cfg->Dashboard_Path[0] = '\0';
 	cfg->VirtualDrive_ISOKernelPatch = 0;
-	cfg->VirtualDrive_DismountISOOnIGR = 0;
+	cfg->VirtualDrive_DismountISOonIGR = 0;
 
 	FILE* f = fopen(ini_path, "r");
 	if (!f)

@@ -3,7 +3,7 @@ goto getadminwrites >NUL
 
 :START
 CD "%~dp0"
-SET "Title=Dashlauncher"
+SET "Title=Dashloader"
 SET "DEST=Dashloader"
 COLOR 1B
 TITLE %Title%
@@ -42,6 +42,7 @@ del /q "%DEST%\%XBE%"
 ren "out.xbe" "%XBE%"
 move "%XBE%" "%DEST%"
 copy "%DEST%\%XBE%" "%DEST%\evoxdash.xbe" >nul
+copy "%DEST%\%XBE%" "XBEs\dashloader.xbe" >nul
 )>NUL
 ECHO - XBE Signing %DEST%\%XBE%
 Echo - XBE Signed!

@@ -40,8 +40,8 @@ Placed in `C:\Bios Loader\`. Only the logging setting is used, all other setting
 
 ### FTP
 
-FTP uses the ftp details stored in the eeprom.
-Hold Start + Black on load.
+- Hold L3 (left stick pressed in) on load.
+- It uses the default network settings set in your dashboard/MSDash
 
 ---
 

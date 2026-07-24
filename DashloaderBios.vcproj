@@ -57,7 +57,7 @@
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				TitleID="0xFACE009"/>
+				TitleID="0x9999996"/>
 		</Configuration>
 		<Configuration
 			Name="Profile|Xbox"

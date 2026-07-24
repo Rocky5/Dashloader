@@ -25,7 +25,7 @@
 #include "dashloader_ui.h"
 #include "dashloader_ftp.h"
 
-#define BUILD_VERSION "2.2.0"
+#define BUILD_VERSION "2.2.1"
 
 #define INI_FILE      "D:\\Dashloader.ini"
 
@@ -81,7 +81,7 @@ void __cdecl main()
 		debuglog("ERROR: Cant create gamepad");
 
 	// Ind-Bios 5003 / M8+ virtual disc loader patch
-	if (!g_cfg.VirtualDrive_ISOKernelPatch)
+	if (g_cfg.VirtualDrive_ISOKernelPatch)
 	{
 		// Ind-Bios = 5003 / M8+ = 5838
 		// 0x55 = U & 0xEC = ì / é & . are at the same offsets in stock 1.6 kernel, prevents crash.
@@ -127,7 +127,7 @@ void __cdecl main()
 	}
 
 	// Dismount virtual disc drive (Cerbios, M8+, IndBios & NKPatcher).
-	if (!g_cfg.VirtualDrive_DismountISOOnIGR)
+	if (g_cfg.VirtualDrive_DismountISOonIGR)
 	{
 		debuglog("");
 		debuglog("[Virtual CDRom]");

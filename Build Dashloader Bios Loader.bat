@@ -3,7 +3,7 @@ goto getadminwrites >NUL
 
 :START
 CD "%~dp0"
-SET "Title=Dashlauncher Bios Loader"
+SET "Title=Dashloader Bios Loader"
 SET "DEST=Bios Loader"
 COLOR 1B
 TITLE %Title%

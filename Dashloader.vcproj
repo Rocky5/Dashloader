@@ -57,7 +57,7 @@
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				TitleID="0xFACE009"/>
+				TitleID="0x9999996"/>
 		</Configuration>
 		<Configuration
 			Name="Profile|Xbox"
@@ -217,7 +217,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="65536"
-				TitleID="0x06999909"
+				TitleID="0x9999996"
 				TitleName="Dashloader"/>
 		</Configuration>
 		<Configuration
@@ -274,7 +274,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="65536"
-				TitleID="0x06999909"
+				TitleID="0x9999996"
 				TitleName="Dashloader"/>
 		</Configuration>
 		<Configuration
